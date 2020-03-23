@@ -1,0 +1,8 @@
+Grammar :=
+atom: STRING | NUMBER | array | models
+
+array : RSQUARE (atom (COMMA)*)? LSQUARE
+
+models: RCURLYBRACES model (COMMA model)* LCURLYBRACES
+
+model: (STRING | NUMBER) COLON atom
