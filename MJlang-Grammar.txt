@@ -1,5 +1,11 @@
 Grammar :=
-atom: STRING | NUMBER | array | models
+atom: STRING | expr | array | models
+
+expr: term PLUS term | term MINUS term | term
+
+term: factor MUL factor | factor DIV factor | factor
+
+factor: NUMBER | RPAREN expr LPAREN
 
 array : RSQUARE (atom (COMMA)*)? LSQUARE
 
