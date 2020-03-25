@@ -58,6 +58,24 @@ class Lexer:
             elif self.current_char == ":":
                 tokens.append(Token(TT_COLON))
                 self.advance()
+            elif self.current_char == "+":
+                tokens.append(Token(TT_PLUS))
+                self.advance()
+            elif self.current_char == "-":
+                tokens.append(Token(TT_MINUS))
+                self.advance()
+            elif self.current_char == "*":
+                tokens.append(Token(TT_MUL))
+                self.advance()
+            elif self.current_char == "/":
+                tokens.append(Token(TT_DIV))
+                self.advance()
+            elif self.current_char == "(":
+                tokens.append(Token(TT_RPAREN))
+                self.advance()
+            elif self.current_char == ")":
+                tokens.append(Token(TT_LPAREN))
+                self.advance()
             elif self.current_char == ",":
                 tokens.append(Token(TT_COMMA))
                 self.advance()
