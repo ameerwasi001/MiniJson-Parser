@@ -1,5 +1,6 @@
 from Nodes import *
 from Tokens import *
+import sys
 
 class Parser:
     def __init__(self, tokens):
@@ -17,10 +18,8 @@ class Parser:
 
     def checkIfNumberOrString(self):
         value = None
-        if self.current_tok.type == TT_NUMBER:
-            value = self.current_tok.value
-            self.advance()
-            return NumberNode(value)
+        if self.current_tok.type in (TT_NUMBER, TT_PLUS, TT_MINUS, TT_MUL, TT_DIV, TT_LPAREN, TT_RPAREN):
+            value = self.expr()
         elif self.current_tok.type == TT_STRING:
             value = self.current_tok.value
             self.advance()
@@ -43,6 +42,37 @@ class Parser:
         value = value if value else self.models()
         return value
 
+    def bin_op(self, func, ops):
+        left = func()
+        while self.current_tok.type in ops:
+            op_tok = self.current_tok
+            self.advance()
+            right = func()
+            left = BinOpNode(left, op_tok, right)
+        return left
+
+    def expr(self):
+        return self.bin_op(self.term, (TT_PLUS, TT_MINUS))
+
+    def term(self):
+        return self.bin_op(self.factor, (TT_MUL, TT_DIV))
+
+    def factor(self):
+        if self.current_tok.type == TT_NUMBER:
+            number = self.current_tok.value
+            self.advance()
+            return NumberNode(number)
+        elif self.current_tok.type == TT_RPAREN:
+            self.advance()
+            expr =  self.expr()
+            if self.current_tok.type != TT_LPAREN:
+                return "Expected ')'"
+            self.advance()
+            return expr
+        else:
+            print("Expected '(' or NUMBER")
+            sys.exit()
+
     def array(self):
         array = []
         if self.current_tok.type != TT_RSQUARE:
@@ -61,7 +91,7 @@ class Parser:
     def models(self):
         models = []
         if self.current_tok.type != TT_RCURLYBRACES:
-            return "Why did you not start with a curly brace"
+            return f"Why did you not start with a curly brace, instaed you ended with {self.current_tok}"
         self.advance()
         models.append(self.model())
         while self.current_tok.type == TT_COMMA:
