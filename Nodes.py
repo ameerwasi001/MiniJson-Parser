@@ -1,3 +1,10 @@
+token_to_op = {
+    "MUL" : "*",
+    "PLUS": "+",
+    "MINUS": "-",
+    "DIV": "/"
+}
+
 class ModelNode:
     def __init__(self, key, value):
         self.key = key
@@ -28,6 +35,17 @@ class ArrayNode:
     def __repr__(self):
         array = ", ".join([str(x) for x in self.elements])
         return f"[{array}]"
+
+class BinOpNode:
+    def __init__(self, left_node, op_tok, right_node):
+        self.left_node = left_node
+        self.op_tok = op_tok
+        self.right_node = right_node
+
+    def __repr__(self):
+        conv_operated = f"({self.left_node} {token_to_op[str(self.op_tok)]} {self.right_node})"
+        conv_operated = eval(conv_operated)
+        return f"{conv_operated}"
 
 class nullObject:
     def __init__(self):
